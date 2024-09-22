@@ -22,9 +22,9 @@ spec:
         - name: POSTGRES_DB
           value: "ecomappdb"
         - name: POSTGRES_USER
-          value: "root"
+          value: "admin"
         - name: POSTGRES_PASSWORD
-          value: "Test@123"  # Consider using Secrets for better security
+          value: "admin123"  # Consider using Secrets for better security
         ports:
         - containerPort: 5432
           name: postgres
@@ -64,16 +64,16 @@ spec:
     spec:
       containers:
       - name: ecomapp
-        image: iscanprint/ecomapp:3.1
+        image: iscanprint/ecomapp:3.2
         ports:
         - containerPort: 8080
         env:
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://postgres-service:5432/ecomappdb  # Updated URL for PostgreSQL
         - name: SPRING_DATASOURCE_USERNAME
-          value: root
+          value: admin
         - name: SPRING_DATASOURCE_PASSWORD
-          value: Test@123  # Consider using Secrets for better security
+          value: admin123  # Consider using Secrets for better security
         resources:
           requests:
             memory: "512Mi"
