@@ -40,11 +40,11 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t iscanprint/ecomapp:3.1 .
+        docker build -t iscanprint/ecomapp:3.2 .
 
     - name: Push Docker image
       run: |
-        docker push iscanprint/ecomapp:3.1
+        docker push iscanprint/ecomapp:3.2
 
     - name: Logout from Docker Hub
       run: docker logout
