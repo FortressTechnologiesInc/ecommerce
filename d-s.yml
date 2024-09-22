@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
       - name: goldencatbankapp
-        image: iscanprint/goldencatbank:1.0
+        image: iscanprint/ecomapp:3.1
         ports:
         - containerPort: 8080
         env:
