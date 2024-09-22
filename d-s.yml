@@ -16,11 +16,11 @@ spec:
         app: postgres
     spec:
       containers:
-      - image: postgres:14  # Adjust the version as needed
+      - image: postgres:15.1  # Adjust the version as needed
         name: postgres
         env:
         - name: POSTGRES_DB
-          value: "bankappdb"
+          value: "ecomappdb"
         - name: POSTGRES_USER
           value: "root"
         - name: POSTGRES_PASSWORD
@@ -51,25 +51,25 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: goldencatbankapp
+  name: ecomapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: goldencatbankapp
+      app: ecomapp
   template:
     metadata:
       labels:
-        app: bankapp
+        app: ecomapp
     spec:
       containers:
-      - name: goldencatbankapp
+      - name: ecomapp
         image: iscanprint/ecomapp:3.1
         ports:
         - containerPort: 8080
         env:
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:postgresql://postgres-service:5432/bankappdb  # Updated URL for PostgreSQL
+          value: jdbc:postgresql://postgres-service:5432/ecomappdb  # Updated URL for PostgreSQL
         - name: SPRING_DATASOURCE_USERNAME
           value: root
         - name: SPRING_DATASOURCE_PASSWORD
@@ -86,11 +86,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: goldencatbankapp-service
+  name: ecomapp-service
 spec:
   type: NodePort   # LoadBalancer if needed
   ports:
   - port: 80
     targetPort: 8080
   selector:
-    app: bankapp
+    app: ecomapp
