@@ -1,0 +1,96 @@
+---
+# PostgreSQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - image: postgres:14  # Adjust the version as needed
+        name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: "bankappdb"
+        - name: POSTGRES_USER
+          value: "root"
+        - name: POSTGRES_PASSWORD
+          value: "Test@123"  # Consider using Secrets for better security
+        ports:
+        - containerPort: 5432
+          name: postgres
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+# PostgreSQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+---
+# Java Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goldencatbankapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goldencatbankapp
+  template:
+    metadata:
+      labels:
+        app: bankapp
+    spec:
+      containers:
+      - name: goldencatbankapp
+        image: iscanprint/goldencatbank:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://postgres-service:5432/bankappdb  # Updated URL for PostgreSQL
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: Test@123  # Consider using Secrets for better security
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+# Bank Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: goldencatbankapp-service
+spec:
+  type: NodePort   # LoadBalancer if needed
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: bankapp
